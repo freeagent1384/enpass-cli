@@ -163,7 +163,7 @@ class Enpassant:
 
     def generateKey(self, key, salt):
         # 2 Iterations of PBKDF2 SHA256
-        return hashlib.pbkdf2_hmac('sha256', key, salt, 2)
+        return hashlib.pbkdf2_hmac('sha512', key, salt, 100000)
 
     def getCryptoParams(self):
         ret = {}
