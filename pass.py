@@ -154,7 +154,11 @@ class Enpassant:
         self.conn = sqlite.connect(filename)
         self.c = self.conn.cursor()
         self.c.row_factory = sqlite.Row
-        self.c.execute('PRAGMA key="' + password.replace('"', '\"') + '"')
+        # self.c.execute('PRAGMA key="' + password.replace('"', '\"') + '"')
+        with open(filename, 'rb') as f:
+            salt = f.read()[:16]
+        hashed = binascii.hexlify(hashlib.pbkdf2_hmac('sha512', bytes(password, encoding='utf-8'), salt, 100000))
+        self.c.execute('PRAGMA key="' + hashed.decode('ascii') + '"')
         self.c.execute('PRAGMA kdf_iter = 24000')
 
     def generateKey(self, key, salt):
